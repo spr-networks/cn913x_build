@@ -10,7 +10,8 @@ set -e
 # General configurations
 ###############################################################################
 #RELEASE=cn9130-early-access-bsp_rev1.0 # Supports both rev1.0 and rev1.1
-BUILDROOT_VERSION=2020.02.1
+#BUILDROOT_VERSION=2020.02.1
+BUILDROOT_VERSION=2022.11-rc3
 : ${BR2_PRIMARY_SITE:=} # custom buildroot mirror
 #UEFI_RELEASE=DEBUG
 #BOOT_LOADER=uefi
@@ -36,7 +37,10 @@ BUILDROOT_VERSION=2020.02.1
 # Ubuntu Version
 # - bionic (18.04)
 # - focal (20.04)
-: ${UBUNTU_VERSION:=focal}
+# - jammy (22.04)
+: ${UBUNTU_VERSION:=jammy}
+
+export FORCE_UNSAFE_CONFIGURE=1
 
 # Check if git user name and git email are configured
 if [ -z "`git config user.name`" ] || [ -z "`git config user.email`" ]; then
@@ -206,6 +210,9 @@ if [[ ! -f $ROOTDIR/build/ubuntu-core.ext4 ]]; then
 	fi
 	if [[ $UBUNTU_VERSION == focal ]]; then
 		UBUNTU_BASE_URL=http://cdimage.ubuntu.com/ubuntu-base/releases/20.04/release/ubuntu-base-20.04.5-base-arm64.tar.gz
+	fi
+	if [[ $UBUNTU_VERSION == jammy ]]; then
+		UBUNTU_BASE_URL=http://cdimage.ubuntu.com/ubuntu-base/releases/22.04/release/ubuntu-base-22.04.1-base-arm64.tar.gz
 	fi
 	if [[ -z $UBUNTU_BASE_URL ]]; then
 		echo "Error: Unknown URL for Ubuntu Version \"\${UBUNTU_VERSION}! Please provide UBUNTU_BASE_URL."
