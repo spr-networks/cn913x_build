@@ -18,7 +18,7 @@ jobs:
       - name: Prepare build container
         run: cd docker && docker build . -t cnb
       - name: Run it
-        run: docker run --privileged -v /dev:/dev --rm -i -t -v "$PWD":/cn913x_build_dir cnb ./runme.sh
+        run: docker run --privileged -v /dev:/dev --rm -v "$PWD":/cn913x_build_dir cnb ./runme.sh
 #      - name: Set up Qemu emulation
 #        run: ./installer/qemu-setup-linux.sh
 #      - name: Download the image
