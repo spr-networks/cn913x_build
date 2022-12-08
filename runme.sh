@@ -54,7 +54,9 @@ fi
 # Misc
 ###############################################################################
 
-RELEASE=${RELEASE:-v5.15}
+#RELEASE=${RELEASE:-v5.15}
+RELEASE=${RELEASE:-hwe-5.19-next}
+
 DPDK_RELEASE=${DPDK_RELEASE:-v22.07}
 
 SHALLOW=${SHALLOW:true}
@@ -159,9 +161,9 @@ SDK_COMPONENTS="u-boot mv-ddr-marvell arm-trusted-firmware linux dpdk"
 for i in $SDK_COMPONENTS; do
 	if [[ ! -d $ROOTDIR/build/$i ]]; then
 		if [ "x$i" == "xlinux" ]; then
-			echo "Cloing https://www.github.com/torvalds/$i release $RELEASE"
+			echo "Cloing https://git.launchpad.net/~ubuntu-kernel/ubuntu/+source/linux/+git/jammy release $RELEASE"
 			cd $ROOTDIR/build
-			git clone $SHALLOW_FLAG git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git linux -b $RELEASE
+			git clone $SHALLOW_FLAG https://git.launchpad.net/~ubuntu-kernel/ubuntu/+source/linux/+git/jammy linux -b $RELEASE
 		elif [ "x$i" == "xarm-trusted-firmware" ]; then
 			echo "Cloning atf from mainline"
 			cd $ROOTDIR/build
@@ -254,7 +256,7 @@ case "\$1" in
                 echo "127.0.0.1 localhost" > /mnt/etc/hosts
                 export DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true LC_ALL=C LANGUAGE=C LANG=C
                 chroot /mnt apt update
-                chroot /mnt apt install --no-install-recommends -y systemd-sysv apt locales less wget procps openssh-server ifupdown net-tools isc-dhcp-client ntpdate lm-sensors i2c-tools psmisc less sudo htop iproute2 iputils-ping kmod network-manager iptables rng-tools apt-utils libatomic1 ethtool
+                chroot /mnt apt install --no-install-recommends -y systemd-sysv apt locales less wget procps openssh-server ifupdown net-tools isc-dhcp-client ntpdate lm-sensors i2c-tools psmisc less sudo htop iproute2 iputils-ping kmod network-manager iptables rng-tools apt-utils libatomic1 ethtool linux-firmware iw nano nftables wireless-regdb cloud-utils fdisk git
 		echo -e "root\nroot" | chroot /mnt passwd
                 umount /mnt/var/lib/apt/
                 umount /mnt/var/cache/apt
@@ -269,7 +271,7 @@ EOF
 	chmod +x overlay/etc/init.d/S99bootstrap-ubuntu.sh
 	make
 	IMG=ubuntu-core.ext4.tmp
-	truncate -s 450M $IMG
+	truncate -s 4G $IMG
 	qemu-system-aarch64 -m 1G -M virt -cpu cortex-a57 -nographic -smp 1 -kernel output/images/Image -append "console=ttyAMA0" -netdev user,id=eth0 -device virtio-net-device,netdev=eth0 -initrd output/images/rootfs.cpio.gz -drive file=$IMG,if=none,format=raw,id=hd0 -device virtio-blk-device,drive=hd0 -no-reboot
         mv $IMG $ROOTDIR/build/ubuntu-core.ext4
 
@@ -335,7 +337,7 @@ fi
 echo "Building the kernel"
 cd $ROOTDIR/build/linux
 #make defconfig
-./scripts/kconfig/merge_config.sh arch/arm64/configs/defconfig $ROOTDIR/configs/linux/cn913x_additions.config
+./scripts/kconfig/merge_config.sh arch/arm64/configs/defconfig $ROOTDIR/configs/linux/cn913x_additions.config $ROOTDIR/configs/linux/spr.config $ROOTDIR/configs/linux/mt76_additions.config
 make -j${PARALLEL} all #Image dtbs modules
 
 rm -rf $ROOTDIR/images/tmp
@@ -403,27 +405,27 @@ e2mkdir -G 0 -O 0 $ROOTDIR/images/tmp/ubuntu-core.ext4:boot/marvell
 e2cp -G 0 -O 0 $ROOTDIR/images/tmp/boot/*.dtb $ROOTDIR/images/tmp/ubuntu-core.ext4:boot/marvell/
 
 # Copy DPDK testpmd
-e2mkdir -G 0 -O 0 $ROOTDIR/images/tmp/ubuntu-core.ext4:root/dpdk
-e2cp -G 0 -O 0 -p $ROOTDIR/build/dpdk/build/app/dpdk-testpmd $ROOTDIR/images/tmp/ubuntu-core.ext4:root/dpdk/
+#e2mkdir -G 0 -O 0 $ROOTDIR/images/tmp/ubuntu-core.ext4:root/dpdk
+#e2cp -G 0 -O 0 -p $ROOTDIR/build/dpdk/build/app/dpdk-testpmd $ROOTDIR/images/tmp/ubuntu-core.ext4:root/dpdk/
 
 # Copy MUSDK
-cd $ROOTDIR/build/musdk-marvell-SDK11.22.07/usr/local/
-for i in `find .`; do
-	if [ -d $i ]; then
-		e2mkdir -v -G 0 -O 0 $ROOTDIR/images/tmp/ubuntu-core.ext4:usr/$i
-	fi
-	if [ -f $i ] && ! [ -L $i ]; then
-		DIR=`dirname $i`
-		e2cp -v -G 0 -O 0 -p $ROOTDIR/build/musdk-marvell-SDK11.22.07/usr/local/$i $ROOTDIR/images/tmp/ubuntu-core.ext4:usr/$DIR
-	fi
-done
-for i in `find .`; do
-       if [ -L $i ]; then
-               DIR=`dirname $i`
-               DEST=`readlink -qn $i`
-               e2ln -vf $ROOTDIR/images/tmp/ubuntu-core.ext4:usr/$DIR/$DEST /usr/$i
-       fi
-done
+#cd $ROOTDIR/build/musdk-marvell-SDK11.22.07/usr/local/
+#for i in `find .`; do
+#	if [ -d $i ]; then
+#		e2mkdir -v -G 0 -O 0 $ROOTDIR/images/tmp/ubuntu-core.ext4:usr/$i
+#	fi
+#	if [ -f $i ] && ! [ -L $i ]; then
+#		DIR=`dirname $i`
+#		e2cp -v -G 0 -O 0 -p $ROOTDIR/build/musdk-marvell-SDK11.22.07/usr/local/$i $ROOTDIR/images/tmp/ubuntu-core.ext4:usr/$DIR
+#	fi
+#done
+#for i in `find .`; do
+#       if [ -L $i ]; then
+#               DIR=`dirname $i`
+#               DEST=`readlink -qn $i`
+#               e2ln -vf $ROOTDIR/images/tmp/ubuntu-core.ext4:usr/$DIR/$DEST /usr/$i
+#       fi
+#done
 
 # Copy over kernel image
 echo "Copying kernel modules"
@@ -440,20 +442,39 @@ done
 cd -
 
 # Copy MUSDK modules
-e2mkdir -G 0 -O 0 $ROOTDIR/images/tmp/ubuntu-core.ext4:root/musdk_modules
-e2cp -G 0 -O 0 $ROOTDIR/build/musdk-marvell-SDK11.22.07/modules/cma/musdk_cma.ko $ROOTDIR/images/tmp/ubuntu-core.ext4:root/musdk_modules
-e2cp -G 0 -O 0 $ROOTDIR/build/musdk-marvell-SDK11.22.07/modules/pp2/mv_pp_uio.ko $ROOTDIR/images/tmp/ubuntu-core.ext4:root/musdk_modules
+#e2mkdir -G 0 -O 0 $ROOTDIR/images/tmp/ubuntu-core.ext4:root/musdk_modules
+#e2cp -G 0 -O 0 $ROOTDIR/build/musdk-marvell-SDK11.22.07/modules/cma/musdk_cma.ko $ROOTDIR/images/tmp/ubuntu-core.ext4:root/musdk_modules
+#e2cp -G 0 -O 0 $ROOTDIR/build/musdk-marvell-SDK11.22.07/modules/pp2/mv_pp_uio.ko $ROOTDIR/images/tmp/ubuntu-core.ext4:root/musdk_modules
+
 
 # ext4 ubuntu partition is ready
 cp $ROOTDIR/build/arm-trusted-firmware/build/t9130/release/flash-image.bin $ROOTDIR/images
 cp $ROOTDIR/build/linux/arch/arm64/boot/Image $ROOTDIR/images
 cd $ROOTDIR/
-truncate -s 520M $ROOTDIR/images/tmp/ubuntu-core.img
-parted --script $ROOTDIR/images/tmp/ubuntu-core.img mklabel msdos mkpart primary 64MiB 517MiB
+
+#HMMM?
+IMG=$ROOTDIR/images/tmp/ubuntu-core.img
+truncate -s 7G $IMG
+parted --script $IMG mklabel msdos mkpart primary 64MiB 6G
 # Generate the above partuuid 3030303030 which is the 4 characters of '0' in ascii
-echo "0000" | dd of=$ROOTDIR/images/tmp/ubuntu-core.img bs=1 seek=440 conv=notrunc
-dd if=$ROOTDIR/images/tmp/ubuntu-core.ext4 of=$ROOTDIR/images/tmp/ubuntu-core.img bs=1M seek=64 conv=notrunc
-dd if=$ROOTDIR/build/arm-trusted-firmware/build/t9130/release/flash-image.bin of=$ROOTDIR/images/tmp/ubuntu-core.img bs=512 seek=4096 conv=notrunc
+
+sfdisk --disk-id $IMG 0x30303030
+
+dd if=$ROOTDIR/images/tmp/ubuntu-core.ext4 of=$IMG bs=1M seek=64 conv=notrunc
+dd if=$ROOTDIR/build/arm-trusted-firmware/build/t9130/release/flash-image.bin of=$IMG bs=512 seek=4096 conv=notrunc
+
+growpart $IMG 1
+
+losetup -Pf $IMG
+
+export LOOP=$(losetup -j $IMG | cut -d: -f1)
+export LOOP_ROOT="${LOOP}p1"
+echo "+ loop is $LOOP"
+
+e2fsck -f $LOOP_ROOT
+resize2fs $LOOP_ROOT
+losetup -d $LOOP 2>/dev/null
+
 mv $ROOTDIR/images/tmp/ubuntu-core.img $ROOTDIR/images/ubuntu-${DTB_KERNEL}-${UBOOT_ENVIRONMENT}.img
 
 echo "Images are ready at $ROOTDIR/image/"
