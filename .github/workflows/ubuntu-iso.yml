@@ -1,10 +1,7 @@
 name: Ubuntu ISO Installer - CN9130
 
 on:
-  workflow_run:
-    workflows: ["Docker Image CI - CN9130"]
-    types:
-      - completed
+  push:
     branches: [ supernetworks ]
 
 jobs:
