@@ -446,7 +446,6 @@ cd -
 #e2cp -G 0 -O 0 $ROOTDIR/build/musdk-marvell-SDK11.22.07/modules/cma/musdk_cma.ko $ROOTDIR/images/tmp/ubuntu-core.ext4:root/musdk_modules
 #e2cp -G 0 -O 0 $ROOTDIR/build/musdk-marvell-SDK11.22.07/modules/pp2/mv_pp_uio.ko $ROOTDIR/images/tmp/ubuntu-core.ext4:root/musdk_modules
 
-
 # ext4 ubuntu partition is ready
 cp $ROOTDIR/build/arm-trusted-firmware/build/t9130/release/flash-image.bin $ROOTDIR/images
 cp $ROOTDIR/build/linux/arch/arm64/boot/Image $ROOTDIR/images
