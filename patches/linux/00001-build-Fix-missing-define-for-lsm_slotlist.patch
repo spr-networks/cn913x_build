@@ -1,0 +1,30 @@
+From 9fd631eb944cb3cc87ac212c104694d8c772b348 Mon Sep 17 00:00:00 2001
+From: cnbuild <cnbuild>
+Date: Fri, 9 Dec 2022 00:48:28 +0000
+Subject: [PATCH] [build] Fix missing define for lsm_slotlist
+
+---
+ security/security.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/security/security.c b/security/security.c
+index eb0c7e105094..98f121a1416a 100644
+--- a/security/security.c
++++ b/security/security.c
+@@ -2404,11 +2404,13 @@ int security_setprocattr(const char *lsm, const char *name, void *value,
+ 
+ 		for (slot = 0; slot < lsm_slot; slot++) {
+ 			slotname = lsm_slot_to_name(slot);
++#if LSMBLOB_ENTRIES > 0
+ 			if (!strcmp(termed, lsm_slotlist[slot]->lsm)) {
+ 				*ilsm = slot;
+ 				rc = size;
+ 				break;
+ 			}
++#endif
+ 		}
+ 
+ 		kfree(termed);
+-- 
+2.34.1
+
