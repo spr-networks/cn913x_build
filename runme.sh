@@ -453,7 +453,7 @@ cd $ROOTDIR/
 
 #HMMM?
 IMG=$ROOTDIR/images/tmp/ubuntu-core.img
-truncate -s 3.2G $IMG
+truncate -s 3200MB $IMG
 parted --script $IMG mklabel msdos mkpart primary 64MiB 3G
 # Generate the above partuuid 3030303030 which is the 4 characters of '0' in ascii
 
