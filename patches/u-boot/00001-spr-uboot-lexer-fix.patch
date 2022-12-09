@@ -1,0 +1,24 @@
+From 0618a4647998f0566e9408a9d7d1d496d87ba16c Mon Sep 17 00:00:00 2001
+From: cnbuild <cnbuild>
+Date: Fri, 9 Dec 2022 00:13:33 +0000
+Subject: [PATCH] Remove extra declaration for updated gcc in ubuntu 22.04
+
+---
+ scripts/dtc/dtc-lexer.l | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/scripts/dtc/dtc-lexer.l b/scripts/dtc/dtc-lexer.l
+index fd825ebba6..24af549977 100644
+--- a/scripts/dtc/dtc-lexer.l
++++ b/scripts/dtc/dtc-lexer.l
+@@ -38,7 +38,6 @@ LINECOMMENT	"//".*\n
+ #include "srcpos.h"
+ #include "dtc-parser.tab.h"
+ 
+-YYLTYPE yylloc;
+ extern bool treesource_error;
+ 
+ /* CAUTION: this will stop working if we ever use yyless() or yyunput() */
+-- 
+2.34.1
+
