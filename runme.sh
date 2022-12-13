@@ -470,7 +470,7 @@ export LOOP=$(losetup -j $IMG | cut -d: -f1)
 export LOOP_ROOT="${LOOP}p1"
 echo "+ loop is $LOOP"
 
-e2fsck -f $LOOP_ROOT
+e2fsck -p -f $LOOP_ROOT
 resize2fs $LOOP_ROOT
 losetup -d $LOOP 2>/dev/null
 
