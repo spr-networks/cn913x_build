@@ -15,8 +15,6 @@ jobs:
         run: cd docker && docker build . -t cnb
       - name: Run it
         run: docker run --privileged -v /dev:/dev --rm -v "$PWD":/cn913x_build_dir cnb ./runme.sh
-      - name: Compress image
-        run: xz ./images/ubuntu-cn9130-cf-pro-mmc:1:1.img
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -34,4 +32,4 @@ jobs:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ./images/ubuntu-cn9130-cf-pro-mmc:1:1.img
           asset_name: ubuntu-cn9130-cf-pro-mmc:1:1.img
-          asset_content_type: application/x-xz
+          asset_content_type: application/octet-stream

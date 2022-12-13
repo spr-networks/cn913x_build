@@ -256,7 +256,7 @@ case "\$1" in
                 echo "127.0.0.1 localhost" > /mnt/etc/hosts
                 export DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true LC_ALL=C LANGUAGE=C LANG=C
                 chroot /mnt apt update
-                chroot /mnt apt install --no-install-recommends -y systemd-sysv apt locales less wget procps openssh-server ifupdown net-tools isc-dhcp-client ntpdate lm-sensors i2c-tools psmisc less sudo htop iproute2 iputils-ping kmod network-manager iptables rng-tools apt-utils libatomic1 ethtool linux-firmware iw nano nftables wireless-regdb cloud-utils fdisk git
+                chroot /mnt apt install --no-install-recommends -y systemd-sysv apt locales less wget procps openssh-server ifupdown net-tools isc-dhcp-client ntpdate lm-sensors i2c-tools psmisc less sudo htop iproute2 iputils-ping kmod network-manager iptables rng-tools apt-utils libatomic1
 		echo -e "root\nroot" | chroot /mnt passwd
                 umount /mnt/var/lib/apt/
                 umount /mnt/var/cache/apt
@@ -271,7 +271,7 @@ EOF
 	chmod +x overlay/etc/init.d/S99bootstrap-ubuntu.sh
 	make
 	IMG=ubuntu-core.ext4.tmp
-	truncate -s 2G $IMG
+	truncate -s 550MB $IMG
 	qemu-system-aarch64 -m 1G -M virt -cpu cortex-a57 -nographic -smp 1 -kernel output/images/Image -append "console=ttyAMA0" -netdev user,id=eth0 -device virtio-net-device,netdev=eth0 -initrd output/images/rootfs.cpio.gz -drive file=$IMG,if=none,format=raw,id=hd0 -device virtio-blk-device,drive=hd0 -no-reboot
         mv $IMG $ROOTDIR/build/ubuntu-core.ext4
 
@@ -453,8 +453,8 @@ cd $ROOTDIR/
 
 #HMMM?
 IMG=$ROOTDIR/images/tmp/ubuntu-core.img
-truncate -s 3200MB $IMG
-parted --script $IMG mklabel msdos mkpart primary 64MiB 3G
+truncate -s 750MB $IMG
+parted --script $IMG mklabel msdos mkpart primary 64MiB 700MB
 # Generate the above partuuid 3030303030 which is the 4 characters of '0' in ascii
 
 sfdisk --disk-id $IMG 0x30303030
