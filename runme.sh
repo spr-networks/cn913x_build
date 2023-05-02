@@ -11,7 +11,7 @@ set -e
 ###############################################################################
 #RELEASE=cn9130-early-access-bsp_rev1.0 # Supports both rev1.0 and rev1.1
 #BUILDROOT_VERSION=2020.02.1
-BUILDROOT_VERSION=2022.11-rc3
+BUILDROOT_VERSION=2022.11
 : ${BR2_PRIMARY_SITE:=} # custom buildroot mirror
 #UEFI_RELEASE=DEBUG
 #BOOT_LOADER=uefi
@@ -38,7 +38,8 @@ BUILDROOT_VERSION=2022.11-rc3
 # - bionic (18.04)
 # - focal (20.04)
 # - jammy (22.04)
-: ${UBUNTU_VERSION:=jammy}
+# - lunar (23.04)
+: ${UBUNTU_VERSION:=lunar}
 
 export FORCE_UNSAFE_CONFIGURE=1
 
@@ -55,7 +56,7 @@ fi
 ###############################################################################
 
 #RELEASE=${RELEASE:-v5.15}
-RELEASE=${RELEASE:-hwe-5.19-next}
+RELEASE=${RELEASE:-master}
 
 DPDK_RELEASE=${DPDK_RELEASE:-v22.07}
 
@@ -87,7 +88,7 @@ case "${BOARD_CONFIG}" in
 		elif [ "x$CP_NUM" == "x3" ]; then
                         DTB_UBOOT=cn9132-cex7-A
 			DTB_KERNEL=cn9132-cex7
-		else 
+		else
 			 echo "Please define a correct number of CPs [1,2,3]"
 			 exit -1
 		fi
@@ -111,7 +112,7 @@ case "${BOARD_CONFIG}" in
 		DTB_UBOOT=cn9131-cf-solidwan
 		DTB_KERNEL=cn9131-cf-solidwan
 	;;
-	4) 	
+	4)
 		echo "*** CN9131 SOM based on Bldn MBV-A/B ***"
                 CP_NUM=2
                 DTB_UBOOT=cn9131-bldn-mbv
@@ -126,7 +127,7 @@ case "${BOARD_CONFIG}" in
 esac
 
 #########################
-# checking tools 
+# checking tools
 #########################
 
 echo "Checking all required tools are installed"
@@ -147,23 +148,23 @@ if [[ ! -d $ROOTDIR/build/toolchain ]]; then
 	mkdir -p $ROOTDIR/build/toolchain
 	cd $ROOTDIR/build/toolchain
 	wget http://releases.linaro.org/components/toolchain/binaries/7.5-2019.12/aarch64-linux-gnu/gcc-linaro-7.5.0-2019.12-x86_64_aarch64-linux-gnu.tar.xz
-	tar -xvf gcc-linaro-7.5.0-2019.12-x86_64_aarch64-linux-gnu.tar.xz 
+	tar -xvf gcc-linaro-7.5.0-2019.12-x86_64_aarch64-linux-gnu.tar.xz
 fi
 
 echo "Building boot loader"
 cd $ROOTDIR
 
 ###############################################################################
-# source code cloning and building 
+# source code cloning and building
 ###############################################################################
 SDK_COMPONENTS="u-boot mv-ddr-marvell arm-trusted-firmware linux dpdk"
 
 for i in $SDK_COMPONENTS; do
 	if [[ ! -d $ROOTDIR/build/$i ]]; then
 		if [ "x$i" == "xlinux" ]; then
-			echo "Cloing https://git.launchpad.net/~ubuntu-kernel/ubuntu/+source/linux/+git/jammy release $RELEASE"
+			echo "Cloing https://git.launchpad.net/~ubuntu-kernel/ubuntu/+source/linux/+git/${UBUNTU_VERSION} release $RELEASE"
 			cd $ROOTDIR/build
-			git clone $SHALLOW_FLAG https://git.launchpad.net/~ubuntu-kernel/ubuntu/+source/linux/+git/jammy linux -b $RELEASE
+			git clone $SHALLOW_FLAG https://git.launchpad.net/~ubuntu-kernel/ubuntu/+source/linux/+git/${UBUNTU_VERSION} linux -b $RELEASE
 		elif [ "x$i" == "xarm-trusted-firmware" ]; then
 			echo "Cloning atf from mainline"
 			cd $ROOTDIR/build
@@ -216,6 +217,9 @@ if [[ ! -f $ROOTDIR/build/ubuntu-core.ext4 ]]; then
 	if [[ $UBUNTU_VERSION == jammy ]]; then
 		UBUNTU_BASE_URL=http://cdimage.ubuntu.com/ubuntu-base/releases/22.04/release/ubuntu-base-22.04.1-base-arm64.tar.gz
 	fi
+	if [[ $UBUNTU_VERSION == lunar ]]; then
+		UBUNTU_BASE_URL=http://cdimage.ubuntu.com/ubuntu-base/releases/23.04/release/ubuntu-base-23.04-base-arm64.tar.gz
+	fi
 	if [[ -z $UBUNTU_BASE_URL ]]; then
 		echo "Error: Unknown URL for Ubuntu Version \"\${UBUNTU_VERSION}! Please provide UBUNTU_BASE_URL."
 		exit 1
@@ -228,10 +232,10 @@ if [[ ! -f $ROOTDIR/build/ubuntu-core.ext4 ]]; then
 	if [ ! -d buildroot ]; then
                 git clone $SHALLOW_FLAG https://github.com/buildroot/buildroot -b $BUILDROOT_VERSION
         fi
-	cd buildroot	
+	cd buildroot
 	cp $ROOTDIR/configs/buildroot/buildroot_defconfig configs/
 	printf 'BR2_PRIMARY_SITE="%s"\n' "${BR2_PRIMARY_SITE}" >> configs/buildroot_defconfig
-	make buildroot_defconfig 
+	make buildroot_defconfig
 	mkdir -p overlay/etc/init.d/
 	cat > overlay/etc/init.d/S99bootstrap-ubuntu.sh << EOF
 #!/bin/sh
