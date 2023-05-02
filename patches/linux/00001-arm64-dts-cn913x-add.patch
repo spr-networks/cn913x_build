@@ -1,0 +1,28 @@
+From f05855bdf1533bf54e0c8155287c7e7297072d7d Mon Sep 17 00:00:00 2001
+From: cnbuild <cnbuild>
+Date: Mon, 1 May 2023 23:17:42 +0000
+Subject: [PATCH] clearfog dbt additions
+
+---
+ arch/arm64/boot/dts/marvell/Makefile | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/marvell/Makefile b/arch/arm64/boot/dts/marvell/Makefile
+index 058237681fe5..4e497cfc52b7 100644
+--- a/arch/arm64/boot/dts/marvell/Makefile
++++ b/arch/arm64/boot/dts/marvell/Makefile
+@@ -25,4 +25,11 @@ dtb-$(CONFIG_ARCH_MVEBU) += cn9132-db.dtb
+ dtb-$(CONFIG_ARCH_MVEBU) += cn9132-db-B.dtb
+ dtb-$(CONFIG_ARCH_MVEBU) += cn9130-crb-A.dtb
+ dtb-$(CONFIG_ARCH_MVEBU) += cn9130-crb-B.dtb
++dtb-$(CONFIG_ARCH_MVEBU) += cn9132-cex7.dtb
++dtb-$(CONFIG_ARCH_MVEBU) += cn9130-cf-base.dtb
++dtb-$(CONFIG_ARCH_MVEBU) += cn9130-cf-pro.dtb
++dtb-$(CONFIG_ARCH_MVEBU) += cn9130-bldn-mbv.dtb
++dtb-$(CONFIG_ARCH_MVEBU) += cn9131-bldn-mbv.dtb
++dtb-$(CONFIG_ARCH_MVEBU) += cn9130-cf-solidwan.dtb
++dtb-$(CONFIG_ARCH_MVEBU) += cn9131-cf-solidwan.dtb
+ dtb-$(CONFIG_ARCH_MVEBU) += ac5-98dx35xx-rd.dtb
+-- 
+2.34.1
+

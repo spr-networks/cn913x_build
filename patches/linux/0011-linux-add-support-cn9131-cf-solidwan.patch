@@ -5,7 +5,6 @@ Subject: [PATCH 1/2] linux: add support cn9131-cf-solidwan
 
 Signed-off-by: Alon Rotman <alon.rotman@solid-run.com>
 ---
- arch/arm64/boot/dts/marvell/Makefile          |   4 +
  arch/arm64/boot/dts/marvell/armada-cp11x.dtsi |  10 +
  .../boot/dts/marvell/cn9130-cf-solidwan.dts   | 410 ++++++++++++++++++
  .../boot/dts/marvell/cn9131-cf-solidwan.dts   | 240 ++++++++++
@@ -13,18 +12,6 @@ Signed-off-by: Alon Rotman <alon.rotman@solid-run.com>
  create mode 100644 arch/arm64/boot/dts/marvell/cn9130-cf-solidwan.dts
  create mode 100644 arch/arm64/boot/dts/marvell/cn9131-cf-solidwan.dts
 
-diff --git a/arch/arm64/boot/dts/marvell/Makefile b/arch/arm64/boot/dts/marvell/Makefile
-index 5d7563d666b6..20606404448c 100644
---- a/arch/arm64/boot/dts/marvell/Makefile
-+++ b/arch/arm64/boot/dts/marvell/Makefile
-@@ -28,3 +28,7 @@ dtb-$(CONFIG_ARCH_MVEBU) += cn9131-cex7.dtb
- dtb-$(CONFIG_ARCH_MVEBU) += cn9132-cex7.dtb
- dtb-$(CONFIG_ARCH_MVEBU) += cn9130-cf-base.dtb
- dtb-$(CONFIG_ARCH_MVEBU) += cn9130-cf-pro.dtb
-+dtb-$(CONFIG_ARCH_MVEBU) += cn9130-bldn-mbv.dtb
-+dtb-$(CONFIG_ARCH_MVEBU) += cn9131-bldn-mbv.dtb
-+dtb-$(CONFIG_ARCH_MVEBU) += cn9130-cf-solidwan.dtb
-+dtb-$(CONFIG_ARCH_MVEBU) += cn9131-cf-solidwan.dtb
 diff --git a/arch/arm64/boot/dts/marvell/armada-cp11x.dtsi b/arch/arm64/boot/dts/marvell/armada-cp11x.dtsi
 index 3bd2182817fb..84afbd9dbad5 100644
 --- a/arch/arm64/boot/dts/marvell/armada-cp11x.dtsi
@@ -43,7 +30,7 @@ index 3bd2182817fb..84afbd9dbad5 100644
 +                        status = "disabled";
 +                };
 +
- 
+
  		CP11X_LABEL(xmdio): mdio@12a600 {
  			#address-cells = <1>;
 diff --git a/arch/arm64/boot/dts/marvell/cn9130-cf-solidwan.dts b/arch/arm64/boot/dts/marvell/cn9130-cf-solidwan.dts
@@ -155,7 +142,7 @@ index 000000000000..e47a767964e4
 +		tx-fault-gpio = <&cp0_gpio1 31 GPIO_ACTIVE_HIGH>; //MPP31
 +		//maximum-power-milliwatt = <2000>;
 +		pinctrl-names = "default";
-+		pinctrl-0 = <&sfp_cp0_eth0_present_pins &sfp_cp0_eth0_tx_disable_pins 
++		pinctrl-0 = <&sfp_cp0_eth0_present_pins &sfp_cp0_eth0_tx_disable_pins
 +				&sfp_cp0_eth0_los_pins>;
 +	};
 +
@@ -352,7 +339,7 @@ index 000000000000..e47a767964e4
 +	phys = <&cp0_comphy5 2>;
 +	num-lanes = <1>;
 +	pinctrl-names = "default";
-+//	reset-gpios = <&cp0_gpio1 8 GPIO_ACTIVE_LOW>;	
++//	reset-gpios = <&cp0_gpio1 8 GPIO_ACTIVE_LOW>;
 +//	pinctrl-0 = <&cp0_pci2_reset_pins>;
 +
 +};
@@ -459,7 +446,7 @@ index 000000000000..e47a767964e4
 +			marvell,pins = "mpp2", "mpp3";
 +                        marvell,function = "uart1";
 +		};
-+		
++
 +	};
 +};
 diff --git a/arch/arm64/boot/dts/marvell/cn9131-cf-solidwan.dts b/arch/arm64/boot/dts/marvell/cn9131-cf-solidwan.dts
@@ -515,9 +502,9 @@ index 000000000000..7915ce2d1232
 +		i2c-bus = <&cp1_i2c1>;
 +                mod-def0-gpio = <&cp1_gpio2 18 GPIO_ACTIVE_LOW>; //MPP50
 +                maximum-power-milliwatt = <2000>;
-+                pinctrl-0 = <&sfp_cp1_present_pins>; 
++                pinctrl-0 = <&sfp_cp1_present_pins>;
 +	};
-+	
++
 +};
 +
 +/* Instantiate the first slave CP115  */
@@ -708,6 +695,5 @@ index 000000000000..7915ce2d1232
 +	};
 +};
 +
--- 
+--
 2.25.1
-

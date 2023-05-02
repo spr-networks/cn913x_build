@@ -4,23 +4,12 @@ Date: Mon, 22 Nov 2021 13:37:46 +0200
 Subject: [PATCH] dts cn9130 som for clearfog base and pro
 
 ---
- arch/arm64/boot/dts/marvell/Makefile          |   2 +
  .../arm64/boot/dts/marvell/cn9130-cf-base.dts | 371 +++++++++++++++
  arch/arm64/boot/dts/marvell/cn9130-cf-pro.dts | 442 ++++++++++++++++++
  3 files changed, 815 insertions(+)
  create mode 100644 arch/arm64/boot/dts/marvell/cn9130-cf-base.dts
  create mode 100644 arch/arm64/boot/dts/marvell/cn9130-cf-pro.dts
 
-diff --git a/arch/arm64/boot/dts/marvell/Makefile b/arch/arm64/boot/dts/marvell/Makefile
-index fef06b676881..3597c985fc92 100644
---- a/arch/arm64/boot/dts/marvell/Makefile
-+++ b/arch/arm64/boot/dts/marvell/Makefile
-@@ -19,3 +19,5 @@ dtb-$(CONFIG_ARCH_MVEBU) += cn9132-db.dtb
- dtb-$(CONFIG_ARCH_MVEBU) += cn9130-cex7.dtb
- dtb-$(CONFIG_ARCH_MVEBU) += cn9131-cex7.dtb
- dtb-$(CONFIG_ARCH_MVEBU) += cn9132-cex7.dtb
-+dtb-$(CONFIG_ARCH_MVEBU) += cn9130-cf-base.dtb
-+dtb-$(CONFIG_ARCH_MVEBU) += cn9130-cf-pro.dtb
 diff --git a/arch/arm64/boot/dts/marvell/cn9130-cf-base.dts b/arch/arm64/boot/dts/marvell/cn9130-cf-base.dts
 new file mode 100644
 index 000000000000..159374683091
@@ -846,6 +835,5 @@ index 000000000000..bede63d244e2
 +};
 +
 +
--- 
+--
 2.25.1
-
