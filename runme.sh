@@ -56,7 +56,7 @@ fi
 ###############################################################################
 
 #RELEASE=${RELEASE:-v5.15}
-RELEASE=${RELEASE:-master}
+RELEASE=${RELEASE:-Ubuntu-6.2.0-34.34}
 
 DPDK_RELEASE=${DPDK_RELEASE:-v22.07}
 
