@@ -39,7 +39,8 @@ BUILDROOT_VERSION=2022.11
 # - focal (20.04)
 # - jammy (22.04)
 # - lunar (23.04)
-: ${UBUNTU_VERSION:=lunar}
+# - mantic (23.10)
+: ${UBUNTU_VERSION:=mantic}
 
 export FORCE_UNSAFE_CONFIGURE=1
 
@@ -56,7 +57,7 @@ fi
 ###############################################################################
 
 #RELEASE=${RELEASE:-v5.15}
-RELEASE=${RELEASE:-Ubuntu-6.2.0-34.34}
+RELEASE=${RELEASE:-Ubuntu-6.5.0-17.17}
 
 DPDK_RELEASE=${DPDK_RELEASE:-v22.07}
 
@@ -219,6 +220,9 @@ if [[ ! -f $ROOTDIR/build/ubuntu-core.ext4 ]]; then
 	fi
 	if [[ $UBUNTU_VERSION == lunar ]]; then
 		UBUNTU_BASE_URL=http://cdimage.ubuntu.com/ubuntu-base/releases/23.04/release/ubuntu-base-23.04-base-arm64.tar.gz
+	fi
+	if [[ $UBUNTU_VERSION == mantic ]]; then
+		UBUNTU_BASE_URL=http://cdimage.ubuntu.com/ubuntu-base/releases/23.10/release/ubuntu-base-23.10-base-arm64.tar.gz
 	fi
 	if [[ -z $UBUNTU_BASE_URL ]]; then
 		echo "Error: Unknown URL for Ubuntu Version \"\${UBUNTU_VERSION}! Please provide UBUNTU_BASE_URL."
