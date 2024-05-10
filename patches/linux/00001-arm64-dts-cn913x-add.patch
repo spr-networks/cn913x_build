@@ -22,7 +22,7 @@ index 058237681fe5..4e497cfc52b7 100644
 +dtb-$(CONFIG_ARCH_MVEBU) += cn9131-bldn-mbv.dtb
 +dtb-$(CONFIG_ARCH_MVEBU) += cn9130-cf-solidwan.dtb
 +dtb-$(CONFIG_ARCH_MVEBU) += cn9131-cf-solidwan.dtb
- dtb-$(CONFIG_ARCH_MVEBU) += ac5-98dx35xx-rd.dtb
+ dtb-$(CONFIG_ARCH_MVEBU) += ac5x-rd-carrier-cn9131.dtb
 -- 
 2.34.1
 

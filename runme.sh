@@ -11,7 +11,7 @@ set -e
 ###############################################################################
 #RELEASE=cn9130-early-access-bsp_rev1.0 # Supports both rev1.0 and rev1.1
 #BUILDROOT_VERSION=2020.02.1
-BUILDROOT_VERSION=2022.11
+BUILDROOT_VERSION=2024.02.1
 : ${BR2_PRIMARY_SITE:=} # custom buildroot mirror
 #UEFI_RELEASE=DEBUG
 #BOOT_LOADER=uefi
@@ -40,7 +40,8 @@ BUILDROOT_VERSION=2022.11
 # - jammy (22.04)
 # - lunar (23.04)
 # - mantic (23.10)
-: ${UBUNTU_VERSION:=mantic}
+# - noble (24.04)
+: ${UBUNTU_VERSION:=noble}
 
 export FORCE_UNSAFE_CONFIGURE=1
 
@@ -57,7 +58,8 @@ fi
 ###############################################################################
 
 #RELEASE=${RELEASE:-v5.15}
-RELEASE=${RELEASE:-Ubuntu-6.5.0-17.17}
+#RELEASE=${RELEASE:-Ubuntu-6.5.0-17.17} #mantic
+RELEASE=${RELEASE:-Ubuntu-6.8.0-32.32} #noble
 
 DPDK_RELEASE=${DPDK_RELEASE:-v22.07}
 
@@ -223,6 +225,9 @@ if [[ ! -f $ROOTDIR/build/ubuntu-core.ext4 ]]; then
 	fi
 	if [[ $UBUNTU_VERSION == mantic ]]; then
 		UBUNTU_BASE_URL=http://cdimage.ubuntu.com/ubuntu-base/releases/23.10/release/ubuntu-base-23.10-base-arm64.tar.gz
+	fi
+	if [[ $UBUNTU_VERSION == noble ]]; then
+		UBUNTU_BASE_URL=http://cdimage.ubuntu.com/ubuntu-base/releases/24.04/release/ubuntu-base-24.04-base-arm64.tar.gz
 	fi
 	if [[ -z $UBUNTU_BASE_URL ]]; then
 		echo "Error: Unknown URL for Ubuntu Version \"\${UBUNTU_VERSION}! Please provide UBUNTU_BASE_URL."
