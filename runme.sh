@@ -246,6 +246,26 @@ if [[ ! -f $ROOTDIR/build/ubuntu-core.ext4 ]]; then
 	printf 'BR2_PRIMARY_SITE="%s"\n' "${BR2_PRIMARY_SITE}" >> configs/buildroot_defconfig
 	make buildroot_defconfig
 	mkdir -p overlay/etc/init.d/
+        pushd overlay
+        if [ ! -d mt76 ]; then
+          git clone https://github.com/openwrt/mt76/ --depth 1
+        fi
+        popd
+        cat > overlay/ntpdate.service << EOF
+[Unit]
+Description=NTP Time Synchronization
+
+[Service]
+ExecStart=/usr/bin/ntpdate time.nist.gov
+
+[Install]
+WantedBy=multi-user.target
+
+[Timer]
+OnBootSec=5min
+OnUnitActiveSec=1d
+EOF
+
 	cat > overlay/etc/init.d/S99bootstrap-ubuntu.sh << EOF
 #!/bin/sh
 
@@ -268,8 +288,12 @@ case "\$1" in
                 echo "localhost" > /mnt/etc/hostname
                 echo "127.0.0.1 localhost" > /mnt/etc/hosts
                 export DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true LC_ALL=C LANGUAGE=C LANG=C
+                cp /ntpdate.service /mnt/usr/lib/systemd/system/
+                ln -s /usr/lib/systemd/system/ntpdate.service /etc/systemd/system/multi-user.target.wants/ntpdate.service
+                mkdir -p /mnt/lib/firmware/mediatek/
+                cp -R /mt76/firmware/ /mnt/lib/firmware/mediatek/
                 chroot /mnt apt update
-                chroot /mnt apt install --no-install-recommends -y systemd-sysv apt locales less wget procps openssh-server ifupdown net-tools isc-dhcp-client ntpdate lm-sensors i2c-tools psmisc less sudo htop iproute2 iputils-ping kmod network-manager iptables rng-tools apt-utils libatomic1
+                chroot /mnt apt install --no-install-recommends -y systemd-sysv apt locales less wget procps openssh-server ifupdown net-tools isc-dhcp-client ntpdate lm-sensors i2c-tools psmisc less sudo htop iproute2 iputils-ping kmod network-manager iptables rng-tools apt-utils libatomic1 pciutils iw
 		echo -e "root\nroot" | chroot /mnt passwd
                 umount /mnt/var/lib/apt/
                 umount /mnt/var/cache/apt
