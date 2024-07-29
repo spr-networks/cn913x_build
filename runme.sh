@@ -256,7 +256,7 @@ if [[ ! -f $ROOTDIR/build/ubuntu-core.ext4 ]]; then
 Description=NTP Time Synchronization
 
 [Service]
-ExecStart=/usr/bin/ntpdate time.nist.gov
+ExecStart=/usr/sbin/ntpdate time.nist.gov
 
 [Install]
 WantedBy=multi-user.target
