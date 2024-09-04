@@ -249,6 +249,11 @@ if [[ ! -f $ROOTDIR/build/ubuntu-core.ext4 ]]; then
         pushd overlay
         if [ ! -d mt76 ]; then
           git clone https://github.com/openwrt/mt76/ --depth 1
+					git clone --depth 1 --no-checkout https://github.com/openwrt/mt76
+					# 65bbd4c394a9d51f1ca5a0531166c22ff07d4e56 is last confirmed good firmware
+					cd mt76
+					git fetch --depth 1 origin 65bbd4c394a9d51f1ca5a0531166c22ff07d4e56
+					git checkout 65bbd4c394a9d51f1ca5a0531166c22ff07d4e56
         fi
         popd
         cat > overlay/ntpdate.service << EOF
