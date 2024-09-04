@@ -248,7 +248,6 @@ if [[ ! -f $ROOTDIR/build/ubuntu-core.ext4 ]]; then
 	mkdir -p overlay/etc/init.d/
         pushd overlay
         if [ ! -d mt76 ]; then
-          git clone https://github.com/openwrt/mt76/ --depth 1
 					git clone --depth 1 --no-checkout https://github.com/openwrt/mt76
 					# 65bbd4c394a9d51f1ca5a0531166c22ff07d4e56 is last confirmed good firmware
 					cd mt76
@@ -293,6 +292,7 @@ case "\$1" in
                 echo "localhost" > /mnt/etc/hostname
                 echo "127.0.0.1 localhost" > /mnt/etc/hosts
                 export DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true LC_ALL=C LANGUAGE=C LANG=C
+
                 cp /ntpdate.service /mnt/usr/lib/systemd/system/
                 ln -s /usr/lib/systemd/system/ntpdate.service /etc/systemd/system/multi-user.target.wants/ntpdate.service
                 mkdir -p /mnt/lib/firmware/mediatek/
