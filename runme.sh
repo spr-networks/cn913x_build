@@ -59,7 +59,7 @@ fi
 
 #RELEASE=${RELEASE:-v5.15}
 #RELEASE=${RELEASE:-Ubuntu-6.5.0-17.17} #mantic
-RELEASE=${RELEASE:-Ubuntu-6.8.0-40.40} #noble
+RELEASE=${RELEASE:-Ubuntu-6.8.0-48.48} #noble
 
 DPDK_RELEASE=${DPDK_RELEASE:-v22.07}
 
