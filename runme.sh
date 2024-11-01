@@ -227,7 +227,7 @@ if [[ ! -f $ROOTDIR/build/ubuntu-core.ext4 ]]; then
 		UBUNTU_BASE_URL=http://cdimage.ubuntu.com/ubuntu-base/releases/23.10/release/ubuntu-base-23.10-base-arm64.tar.gz
 	fi
 	if [[ $UBUNTU_VERSION == noble ]]; then
-		UBUNTU_BASE_URL=http://cdimage.ubuntu.com/ubuntu-base/releases/24.04/release/ubuntu-base-24.04-base-arm64.tar.gz
+		UBUNTU_BASE_URL=http://cdimage.ubuntu.com/ubuntu-base/releases/24.04.1/release/ubuntu-base-24.04.1-base-arm64.tar.gz
 	fi
 	if [[ -z $UBUNTU_BASE_URL ]]; then
 		echo "Error: Unknown URL for Ubuntu Version \"\${UBUNTU_VERSION}! Please provide UBUNTU_BASE_URL."
